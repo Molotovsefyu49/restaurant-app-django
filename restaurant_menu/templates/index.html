@@ -1,32 +1,94 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container">
-     <h1>Restaurant Menu</h1>
-        <ul class="list-group list-group-flush">
-              {% for meal in meals %}
-                  <h2 class="pt-5">{{ meal.1 }}</h2>
-                      {% for row in item_list %}
-                          {% if row.meal_type == meal.0 %}
-                              {% if row.status == 0 %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 pb-0">
-                                    <a href="{% url 'menu_item' row.pk %}"><h3><del>{{ row.meal }}</del>></h3></a>
-                                    <span class="badge bg-primary rounded-pill ">{{ row.price }}</span>
-                                </li>
-                                <li class="list-group-item pt-0">
-                                    <p>{{ row.description }}</p>
-                                </li>
-                              {% else %}
-                              <li class="list-group-item d-flex justify-content-between align-items-center border-0 pb-0">
-                                    <a href="{% url 'menu_item' row.pk %}"><h3>{{ row.meal }}</h3></a>
-                                    <span class="badge bg-primary rounded-pill ">{{ row.price }}</span>
-                              </li>
-                              <li class="list-group-item pt-0">
-                                  <p>{{ row.description }}</p>
-                              </li>
-                              {% endif %}
-                          {% endif %}
-                      {% endfor %}
-              {% endfor %}
-        </ul>
-</div>
-{% endblock content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Menu</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    /* Custom CSS for Chinese restaurant style */
+    body {
+      font-family: 'Noto Sans TC', Arial, sans-serif;
+      background-image: url('/static/restaurant_menu/asian_background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    h1, h2, h3 {
+      color: #dc3545;
+      font-family: 'Noto Serif TC', 'Microsoft JhengHei', serif;
+      font-weight: bold;
+    }
+    .menu-item {
+      margin-bottom: 30px;
+      border: 1px solid #e9ecef;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: #ffffff;
+    }
+    .menu-item.unavailable {
+      opacity: 0.5;
+    }
+    .menu-item img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'home' %}">Chez Malick</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#starters">Starters</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#salads">Salads</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#main-dishes">Main Dishes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#desserts">Desserts</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <h1 class="text-center">Restaurant Menu</h1>
+  <div class="container">
+    {% for meal in meals %}
+    <h2 id="{{ meal.0 }}">{{ meal.1 }}</h2>
+      <div class="row">
+        {% for row in item_list %}
+          {% if row.meal_type == meal.0 %}
+            <div class="col-md-6 col-lg-4">
+              <div class="menu-item {% if row.status == 'unavailable' %}unavailable{% endif %}">
+                <a href="{% url 'menu_item' row.pk %}">
+                  <h3>{{ row.meal }}</h3>
+                </a>
+                <p>{{ row.description }}</p>
+                <p>Price: ${{ row.price }}</p>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
+
